@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:models="clr-namespace:TemplateProject.Models"
+             xmlns:viewModels="clr-namespace:TemplateProject.ViewModels"
              x:Class="TemplateProject.Views.NotePage"
              Title="Note"
-             x:DataType="models:Note">
+             x:DataType="viewModels:NoteViewModel">
+
+    <ContentPage.BindingContext>
+        <viewModels:NoteViewModel/>
+    </ContentPage.BindingContext>
     
     <VerticalStackLayout Spacing="10" Margin="5">
         <Editor x:Name="TextEditor"
@@ -14,11 +18,11 @@
 
         <Grid ColumnDefinitions="*,*" ColumnSpacing="4">
             <Button Text="Save"
-                    Clicked="SaveButton_Clicked" />
+                    Command="{Binding SaveCommand}" />
 
             <Button Grid.Column="1"
                     Text="Delete"
-                    Clicked="DeleteButton_Clicked" />
+                    Command="{Binding DeleteCommand}" />
         </Grid>
     </VerticalStackLayout>
 </ContentPage>
