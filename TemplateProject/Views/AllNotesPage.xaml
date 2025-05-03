@@ -1,45 +1,47 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:viewModels="clr-namespace:TemplateProject.ViewModels"
-             x:Class="TemplateProject.Views.AllNotesPage"
-             Title="Your Notes"
-             NavigatedTo="ContentPage_NavigatedTo"
-             x:DataType="viewModels:NotesViewModel">
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"  
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"  
+            xmlns:viewModels="clr-namespace:TemplateProject.ViewModels"  
+            x:Class="TemplateProject.Views.AllNotesPage"  
+            Title="Your Notes"  
+            NavigatedTo="ContentPage_NavigatedTo"  
+            x:DataType="viewModels:NotesViewModel">  
 
-    <ContentPage.BindingContext>
-        <viewModels:NotesViewModel/>
-    </ContentPage.BindingContext>
+   <ContentPage.BindingContext>  
+       <viewModels:NotesViewModel/>  
+   </ContentPage.BindingContext>  
 
-    <!-- Add an item to the toolbar -->
-    <ContentPage.ToolbarItems>
-        <!-- Buttons, when pressed, Clicked event is raised, like normal button -->
-        <ToolbarItem Text="Add" Command="{Binding NewCommand}" IconImageSource="{FontImage Glyph='+',Color=Black, Size=22}"/>
-    </ContentPage.ToolbarItems>
+   <VerticalStackLayout>  
+       <!-- Tab Bar -->  
+       <HorizontalStackLayout BindableLayout.ItemsSource="{Binding Tabs}" Spacing="10" Padding="10">  
+           <BindableLayout.ItemTemplate>  
+               <DataTemplate x:DataType="viewModels:TabViewModel">  
+                   <Button Text="{Binding Title}"  
+                           Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:NotesViewModel}}, Path=SelectTabCommand}"  
+                           CommandParameter="{Binding}"/>  
+               </DataTemplate>  
+           </BindableLayout.ItemTemplate>  
+       </HorizontalStackLayout>  
 
-    <!-- Display notes in a list -->
+       <!-- Tab Content -->  
+       <ContentView>  
+           <ContentView.Content>  
+               <CollectionView x:Name="NotesCollection" ItemsSource="{Binding SelectedTab.Notes}" Margin="20">  
+                   <CollectionView.ItemsLayout>  
+                       <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>  
+                   </CollectionView.ItemsLayout>  
+                   <CollectionView.ItemTemplate>  
+                       <DataTemplate x:DataType="viewModels:NoteViewModel">  
+                           <StackLayout>  
+                               <Label Text="{Binding Text}" FontSize="22"/>  
+                               <Label Text="{Binding Date}" FontSize="14" TextColor="Silver"/>  
+                           </StackLayout>  
+                       </DataTemplate>  
+                   </CollectionView.ItemTemplate>  
+               </CollectionView>  
+           </ContentView.Content>  
+       </ContentView>  
 
-    <CollectionView x:Name="notesCollection"
-                    ItemsSource="{Binding AllNotes}"
-                    Margin="20"
-                    SelectionMode="Single"
-                    SelectionChangedCommand="{Binding SelectNoteCommand}"
-                    SelectionChangedCommandParameter="{Binding x:DataType='CollectionView', Source={RelativeSource Self}, Path=SelectedItem}">
+   </VerticalStackLayout>  
 
-        <!-- Designate how the collection of items are laid out -->
-        <CollectionView.ItemsLayout>
-            <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
-        </CollectionView.ItemsLayout>
-
-        <!-- Define the appearance of each item in the list -->
-        <CollectionView.ItemTemplate>
-            <DataTemplate x:DataType="viewModels:NoteViewModel">
-                <StackLayout>
-                    <Label Text="{Binding Text}" FontSize="22"/>
-                    <Label Text="{Binding Date}" FontSize="14" TextColor="Silver"/>
-                </StackLayout>
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-
-    </CollectionView>
 </ContentPage>

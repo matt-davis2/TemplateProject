@@ -4,7 +4,7 @@ using System.Windows.Input;
 
 namespace TemplateProject.ViewModels;
 
-internal class NoteViewModel : ObservableObject, IQueryAttributable
+public class NoteViewModel : ObservableObject, IQueryAttributable
 {
     private Models.Note _note;
 

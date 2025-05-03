@@ -1,22 +1,45 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Controls.Handlers.Compatibility;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using TemplateProject.Models;
 
 namespace TemplateProject.ViewModels;
 
-internal class NotesViewModel : IQueryAttributable
+public class NotesViewModel : BaseViewModel, IQueryAttributable
 {
+    public ObservableCollection<TabViewModel> Tabs { get; set; }
+    public TabViewModel SelectedTab { get; set; }
+    public ICommand SelectTabCommand { get; }
     public ObservableCollection<ViewModels.NoteViewModel> AllNotes { get; }
     public ICommand NewCommand { get; }
     public ICommand SelectNoteCommand { get; }
 
     public NotesViewModel()
     {
-        AllNotes = new ObservableCollection<ViewModels.NoteViewModel>(Models.Note.LoadAll().Select(x => new NoteViewModel(x)));
+        // Initialize tabs
+        Tabs = new ObservableCollection<TabViewModel>
+        {
+            new TabViewModel { Title = "All Notes", Notes = new ObservableCollection<NoteViewModel> { } },
+            new TabViewModel{ Title = "Favorites", Notes = new ObservableCollection<NoteViewModel> { /* add notes here*/}},
+        };
+
+        // Set default selected tab
+        SelectedTab = Tabs[0];
+
+        // Command to handle tab selection
+        SelectTabCommand = new Command<TabViewModel>(tab =>
+        {
+            SelectedTab = tab;
+            OnPropertyChanged(nameof(SelectedTab));
+        });
+
         NewCommand = new AsyncRelayCommand(NewNoteAsync);
-        SelectNoteCommand = new AsyncRelayCommand<ViewModels.NoteViewModel>(SelectNoteAsync);
+        SelectNoteCommand = new AsyncRelayCommand<NoteViewModel>(SelectNoteAsync);
     }
+
+    
+
 
     private async Task NewNoteAsync()
     {
